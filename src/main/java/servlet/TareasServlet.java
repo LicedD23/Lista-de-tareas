@@ -4,93 +4,86 @@
  */
 package servlet;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-
-
-/**
- *
- * @author SENA
- */
-@WebServlet(name = "TareaServlet", urlPatterns = {"/tareas/*"})
+@WebServlet(name = "TareasServlet", urlPatterns = {"/tareas/*"})
 public class TareasServlet extends HttpServlet {
-
-   @Override
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
         HttpSession session = request.getSession();
         List<Tarea> listaTareas = (List<Tarea>) session.getAttribute("tareas");
-        
         if (listaTareas == null) {
             listaTareas = new ArrayList<>();
             session.setAttribute("tareas", listaTareas);
         }
-        String pathInfo = request.getPathInfo();
         
+        String pathInfo = request.getPathInfo();
         if (pathInfo == null || "/".equals(pathInfo)) {
-            //listar tareas
-            request.getRequestDispatcher("/WEB-INF/views/listar.Tareas.jsp").forward(request, response);
-        } else if ("/nueva".equals(pathInfo)){
-            //nueva tarea
+            // Listar tareas
+            request.getRequestDispatcher("/WEB-INF/views/listarTareas.jsp").forward(request, response);
+        } else if ("/nueva".equals(pathInfo)) {
+            // Formulario nueva tarea
             request.getRequestDispatcher("/WEB-INF/views/nuevaTarea.jsp").forward(request, response);
-        } else if (pathInfo.startsWith("/completar/")){
-            //completar tarea
+        } else if (pathInfo.startsWith("/completar/")) {
+            // Completar tarea
             try {
                 int id = Integer.parseInt(pathInfo.substring("/completar/".length()));
                 for (Tarea tarea : listaTareas) {
-                    if (tarea.getId() == id){
+                    if (tarea.getId() == id) {
                         tarea.setCompletada(true);
                         break;
                     }
                 }
             } catch (NumberFormatException e) {
-                //ignorar
+                // Ignorar
+            }
+            response.sendRedirect(request.getContextPath() + "/tareas");
+        } else if (pathInfo.startsWith("/eliminar/")) {
+            // Eliminar tarea
+            try {
+                int id = Integer.parseInt(pathInfo.substring("/eliminar/".length()));
+                listaTareas.removeIf(tarea -> tarea.getId() == id);
+            } catch (NumberFormatException e) {
+                // Ignorar
             }
             response.sendRedirect(request.getContextPath() + "/tareas");
         }
     }
 
-    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
         HttpSession session = request.getSession();
         List<Tarea> listaTareas = (List<Tarea>) session.getAttribute("tareas");
-        
         if (listaTareas == null) {
             listaTareas = new ArrayList<>();
             session.setAttribute("tareas", listaTareas);
         }
         
         String pathInfo = request.getPathInfo();
-        
         if ("/guardar".equals(pathInfo)) {
             String descripcion = request.getParameter("descripcion");
-            
-            if(descripcion != null && !descripcion.trim().isEmpty()) {
+            if (descripcion != null && !descripcion.trim().isEmpty()) {
                 int nuevoId = 1;
-                if(!listaTareas.isEmpty()) {
+                if (!listaTareas.isEmpty()) {
                     nuevoId = listaTareas.get(listaTareas.size() - 1).getId() + 1;
                 }
-                
-                Tarea nuevaTarea = new Tarea (nuevoId, descripcion);
+                Tarea nuevaTarea = new Tarea(nuevoId, descripcion);
                 listaTareas.add(nuevaTarea);
             }
-            
             response.sendRedirect(request.getContextPath() + "/tareas");
         }
     }
-
+}
     
 
 }
