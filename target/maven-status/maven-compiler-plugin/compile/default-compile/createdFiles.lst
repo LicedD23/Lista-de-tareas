@@ -1,0 +1,4 @@
+com\mycompany\integracion_completa\resources\JakartaEE10Resource.class
+servlet\TareasServlet.class
+servlet\Tarea.class
+com\mycompany\integracion_completa\JakartaRestConfiguration.class
