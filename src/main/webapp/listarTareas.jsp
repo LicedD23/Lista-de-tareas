@@ -7,7 +7,7 @@
 
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="Tarea" %>
+<%@ page import="servlet.Tarea" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -100,7 +100,7 @@
 <body>
     <div class="contenedor">
         <h1>Lista de Tareas</h1>
-        <a href="${pageContext.request.contextPath}/tareas/nueva" class="nuevo-btn">Nueva Tarea</a>
+        <a href="nuevaTarea.jsp" class="nuevo-btn">Nueva Tarea</a>
         
         <% List<Tarea> tareas = (List<Tarea>) session.getAttribute("tareas"); %>
         <% if (tareas != null && !tareas.isEmpty()) { %>

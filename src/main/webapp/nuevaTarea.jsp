@@ -82,7 +82,7 @@
             <input type="text" id="descripcion" name="descripcion" required>
             <input type="submit" value="Guardar">
         </form>
-        <a href="${pageContext.request.contextPath}/tareas" class="volver-btn">Volver a la lista</a>
+            <a href="listarTareas.jsp" class="volver-btn">Volver a la lista</a>
     </div>
 </body>
 </html>
